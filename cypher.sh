@@ -1,7 +1,7 @@
 #!/bin/sh
 NEO4J_HOST="groom.neo4j.academy:443"
 
-if [ $# -eq 1 ]; then
+if [[ $# -eq 1 ]]; then
     docker run --rm -it --name cypher-exec \
            -v "$(pwd)/cypher:/cypher" -u root --entrypoint /bin/bash \
            neo4j:4.0-enterprise \

@@ -3,7 +3,7 @@
 EVENTS_CYPHER="./cypher/events.cypher"
 BOOTSTRAP_SERVER_URL="pkc-lo7py.northamerica-northeast1.gcp.confluent.cloud:9092"
 API_KEY="AKMM3HDV7U35BYEO"
-API_SECRET="$(gcloud secrets versions access latest --secret=groom-${API_KEY})"
+API_SECRET="$(sh fetch.sh)"
 JAAS_CONFIG="org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${API_KEY}\" password=\"${API_SECRET}\";"
 CYPHER="$(cat ${EVENTS_CYPHER} | grep -v '//' | tr '\r\n\t' ' ')"
 
