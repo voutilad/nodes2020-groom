@@ -1,10 +1,10 @@
 // Check for existing jobs
 CALL apoc.periodic.list() YIELD name
 WITH name WHERE name = "groomThreadingJob"
-CALL apoc.periodic.cancel(name) YIELD name, cancelled
-RETURN name, cancelled;
+CALL apoc.periodic.cancel(name) YIELD name AS cancelled
+RETURN cancelled;
 
-CALL apoc.periodic.schedule("groomThreadingJob",
+CALL apoc.periodic.repeat("groomThreadingJob",
   "CALL apoc.cypher.runMany('
      // Thread Frames
      MATCH (f:Frame) WHERE NOT (f)<-[:PREV_FRAME]-()
@@ -37,7 +37,7 @@ CALL apoc.periodic.schedule("groomThreadingJob",
 
      // Update Current State
      MATCH (s:State) WHERE NOT (s)<-[:PREV_STATE]-()
-     MATCH (a:Actor {id:s.actorId, session:s.sessionId})
-     MERGE (a)-[:CURRENT_STATE]->(s);')",
-  120) YIELD name
+     MATCH (a:Actor {id:s.actorId, session:s.actorSession})
+     MERGE (a)-[:CURRENT_STATE]->(s);', {})",
+  30) YIELD name
 RETURN name;

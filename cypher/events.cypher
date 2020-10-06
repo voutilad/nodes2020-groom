@@ -4,15 +4,16 @@ CREATE (ev:Event {type: event.type, counter: event.counter})
 CREATE (ev)-[:OCCURRED_AT]->(frame)
 // Conditionally process Actor and Target
 FOREACH (thing IN [x IN [event.actor, event.target] WHERE x IS NOT NULL] |
-    MERGE (actor:Actor {id: thing.id}) ON CREATE SET actor.type = thing.type
-    MERGE (subsector:SubSector {id: thing.position.subsector})
+    MERGE (actor:Actor {id: thing.id, session: event.session})
+        ON CREATE SET actor.type = thing.type
+    MERGE (subsector:SubSector {id: thing.position.subsector, session: event.session})
     CREATE (actorState:State)
     SET actorState.position = point(thing.position),
         actorState.angle = thing.position.angle,
         actorState.health = thing.health,
         actorState.armor = thing.armor,
         actorState.actorId = thing.id,
-        actorState.actorSession = thing.session
+        actorState.actorSession = event.session
     CREATE (actorState)-[:IN_SUBSECTOR]->(subsector)
     // Hacky logic...hold your nose
     FOREACH (_ IN CASE thing.id WHEN event.actor.id
