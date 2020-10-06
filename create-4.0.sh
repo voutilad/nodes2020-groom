@@ -1,10 +1,10 @@
 #!/bin/sh
 
 BOOTSTRAP_SERVER_URL="pkc-lo7py.northamerica-northeast1.gcp.confluent.cloud:9092"
-API_KEY="5BQYDJCXNTGJ6NGG"
-API_SECRET="63qSlmfdHezHagoFgdAkvLtcbGMdjopB8c+4yzA5AsDX8QwdjNRKuAO6oJ3Vfwrk"
+API_KEY="AKMM3HDV7U35BYEO"
+API_SECRET="$(gcloud secrets versions access latest --secret=groom-${API_KEY})"
 JAAS_CONFIG="org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${API_KEY}\" password=\"${API_SECRET}\";"
-CYPHER="$(cat events.cypher | tr '\r\n\t' ' ')"
+CYPHER="$(cat events.cypher | grep -v '//' | tr '\r\n\t' ' ')"
 
 printf "Using Cypher:\n${CYPHER}\n"
 
@@ -19,7 +19,7 @@ docker create --name neo4j-groom \
 	-e NEO4J_dbms_logs_query_enabled=INFO \
 	-e NEO4J_dbms_logs_query_parameter__logging__enabled=true \
 	-e NEO4J_dbms_default__advertised__address=groom.neo4j.academy \
-	-e NEO4J_dbms_security_procedures_unrestricted="apoc.schema.assert,apoc.periodic.schedule" \
+	-e NEO4J_dbms_security_procedures_unrestricted="apoc.schema.assert" \
 	-e NEO4J_kafka_retry_backoff_ms=500 \
 	-e NEO4J_kafka_request_timeout_ms=20000 \
 	-e NEO4J_kafka_sasl_mechanism=PLAIN \
@@ -34,4 +34,4 @@ docker create --name neo4j-groom \
 	-m 13G \
 	-p 7474:7474 \
 	-p 7687:7687 \
-	neo4j:4.0.8-enterprise
+	neo4j:4.0-enterprise
