@@ -40,7 +40,8 @@ func accessSecretVersion(projectId, secretName string, version int) error {
 }
 
 func main() {
-	err := accessSecretVersion("neo4j-se-team-201905", "groom-AKMM3HDV7U35BYEO", LatestVersion)
+	// TODO: env vars for these params? or cli?
+	err := accessSecretVersion("neo4j-se-team-201905", "groom-demo-confluent", LatestVersion)
 	if err != nil {
 		log.Fatal(err)
 	}
