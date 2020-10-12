@@ -42,10 +42,10 @@ To recreate what I built just like in the demo:
    compliant APOC and Neo4j-Streams plugins, putting them in
    `./plugins`
 7. Run the create script, setting appropriate env vars related to your
-   Confluent Cloud config:
+   Confluent Cloud config and the secret you created in GSM:
    ```bash
-   $ BOOTSTRAP_SERVER_URL=${CONFLUENT_URL} API_KEY=${CONFLUENT_KEY} sh
-   create-4.0.sh
+   $ BOOTSTRAP_SERVER_URL=${CONFLUENT_URL} API_KEY=${CONFLUENT_KEY} \
+     GCP_SECRET_NAME=${YOUR_GSM_SECRET_NAME} create-4.0.sh
    ```
 8. Run `docker start -a neo4j-groom` and confirm Neo4j starts up and
    listens for bolt connections
