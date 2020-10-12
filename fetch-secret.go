@@ -1,12 +1,14 @@
 package main
 
 import (
-	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"context"
 	"fmt"
-	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"log"
+	"os"
 	"strconv"
+
+	secretmanager "cloud.google.com/go/secretmanager/apiv1"
+	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
 const LatestVersion = -1
@@ -40,8 +42,17 @@ func accessSecretVersion(projectId, secretName string, version int) error {
 }
 
 func main() {
-	// TODO: env vars for these params? or cli?
-	err := accessSecretVersion("neo4j-se-team-201905", "groom-demo-confluent", LatestVersion)
+	project, ok := os.LookupEnv("GCP_PROJECT")
+	if !ok {
+		log.Fatal("Could not find GCP_PROJECT environment variable!")
+	}
+
+	secret, ok := os.LookupEnv("GCP_SECRET_NAME")
+	if !ok {
+		log.Fatal("Could not find GCP_SECRET_NAME environment variable!")
+	}
+
+	err := accessSecretVersion(project, secret, LatestVersion)
 	if err != nil {
 		log.Fatal(err)
 	}
