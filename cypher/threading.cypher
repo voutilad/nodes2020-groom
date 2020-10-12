@@ -38,6 +38,13 @@ CALL apoc.periodic.repeat("groomThreadingJob",
      // Update Current State
      MATCH (s:State) WHERE NOT (s)<-[:PREV_STATE]-()
      MATCH (a:Actor {id:s.actorId, session:s.actorSession})
-     MERGE (a)-[:CURRENT_STATE]->(s);', {})",
+     MERGE (a)-[:CURRENT_STATE]->(s);
+
+     // Set Initial State
+     MATCH (a:Actor)-[:CURRENT_STATE]->(:State) WHERE NOT (a)-[:INITIAL_STATE]->(:State)
+     WITH a
+     MATCH (a)-[:CURRENT_STATE]->(:State)-[:PREV_STATE*]->(first:State)
+     WHERE NOT (first)-[:PREV_STATE]->(:State)
+     MERGE (a)-[:INITIAL_STATE]->(first);', {})",
   30) YIELD name
 RETURN name;
